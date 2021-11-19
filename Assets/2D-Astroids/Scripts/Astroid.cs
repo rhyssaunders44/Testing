@@ -2,48 +2,41 @@ using UnityEngine;
 
 public class Astroid : MonoBehaviour
 {
-    public float size = 1f;
-    public float speed = 50f;
-    public float minSize = 0.5f;
-    public float maxSize = 1.5f;
+    public float size = 1f, speed = 50f;
+    public float minSize = 0.5f, maxSize = 1.5f;
     public float maxLifetime = 30.0f;
-
-    private SpriteRenderer _mySpriteRenderer;
     private Rigidbody2D _myRigidbody2D;
 
     private void Awake()
     {
-        _mySpriteRenderer = GetComponent<SpriteRenderer>();
         _myRigidbody2D = GetComponent<Rigidbody2D>();
     }
 
     private void Start()
     {
-        this.transform.eulerAngles = new Vector3(0.0f, 0.0f, Random.value * 360.0f);
-        this.transform.localScale = Vector3.one * this.size;
-        _myRigidbody2D.mass = this.size;
+        transform.eulerAngles = new Vector3(0.0f, 0.0f, Random.value * 360.0f);
+        transform.localScale = Vector3.one * size;
+        _myRigidbody2D.mass = size;
     }
 
     public void SetTrajectory(Vector2 direction)
     {
         _myRigidbody2D.AddForce(direction * speed);
-        // Destroy this after 'maxLifetime'.
-        Destroy(this.gameObject, this.maxLifetime);
+        Destroy(gameObject, maxLifetime);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Bullet")
+        if (!collision.gameObject.CompareTag("Bullet")) return;
+        if (size * 0.5f >= minSize)
         {
-            if ((this.size * 0.5f) >= this.minSize)
-            {
-                CreateSplit();
-                CreateSplit();
-            }
-            // Play explosion on death.
-            GameManager.instance.AstroidDestroyed(this);
-            Destroy(this.gameObject);
+            CreateSplit();
+            CreateSplit();
         }
+        // Play explosion on death.
+        GameManager.instance.AstroidDestroyed(this);
+        Destroy(gameObject);
+        
     }
 
     private void CreateSplit()

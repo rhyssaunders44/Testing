@@ -21,7 +21,7 @@ public class Bullet : MonoBehaviour
 
     public void Project()
     {
-        rb.AddForce(Vector2.up * speed);
+        rb.AddForce(transform.up * speed);
         Destroy(gameObject, maxLifetime);
     }
 
