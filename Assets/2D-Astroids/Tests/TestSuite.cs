@@ -14,13 +14,9 @@ public class TestSuite
 	[SetUp]
 	public void Setup()
 	{
-		// Makes the game as a GameObject = gameGameObject.
 		gameGameObject = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/Game"));
-		// Gets the GameManager, which is on the game.
 		game = gameGameObject.GetComponent<GameManager>();
-		// Gets the AsteroidSpawner, which is a GameObject in the children of the gameGameObject. 
 		asteroidSpawner = gameGameObject.GetComponentInChildren<AsteroidSpawner>();
-		// Gets the Player, which is a GameObject in the children of the gameGameObject. 
 		player = gameGameObject.GetComponentInChildren<Player>();
 	}
 	
@@ -32,29 +28,27 @@ public class TestSuite
 	}
 	
 	[UnityTest]
-	public IEnumerator AsteroidsMovesAfterSpawned()
+	public IEnumerator AsteroidMoves()
 	{
-		// Spawns one astroid as asteroid.
+		// Spawns one asteroid as asteroid.
 		GameObject asteroid = asteroidSpawner.SpawnOneAsteroid();
-		// Gets its initial Position as a Vector 2.
 		Vector2 initialPos = asteroid.transform.position;
-		// Waits one second, because all tests are a coroutine you need to have one return.
-		yield return new WaitForSeconds(0.1f);
+		yield return new WaitForSeconds(waitTime);
+		
 		// Checks if the new position is different to the old and if so it passes the test.
 		Assert.AreNotEqual(asteroid.transform.position, initialPos);
 	}
 	
 	[UnityTest]
-	public IEnumerator GameOverOccursOnAsteroidCollision()
+	public IEnumerator GameOverOnPlayerCollision()
 	{
-		// Get the current amount of lives.
 		int initialLives = game.lives;
-		// Spawns one astroid as asteroid.
 		GameObject asteroid = asteroidSpawner.SpawnOneAsteroid();
+		
 		// Puts the asteroid ontop of the player.
 		asteroid.transform.position = player.gameObject.transform.position;
-		// Waits 0.1 Seconds, as yes this is a coroutine.
-		yield return new WaitForSeconds(0.1f);
+		yield return new WaitForSeconds(waitTime);
+		
 		// Checks if the player has lost lives.
 		Assert.Less(game.lives, initialLives);
 	}
@@ -81,7 +75,7 @@ public class TestSuite
 	}
 	
 	[UnityTest]
-	public IEnumerator BulletsDestroyAsteroid()
+	public IEnumerator BulletDestroysAsteroid()
 	{
 		// Spawns an asteroid at origin
 		GameObject asteroid = asteroidSpawner.SpawnOneAsteroid();

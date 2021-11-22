@@ -4,7 +4,8 @@ public class Astroid : MonoBehaviour
 {
     public float size = 1f, speed = 50f;
     public float minSize = 0.5f, maxSize = 1.5f;
-    public float maxLifetime = 30.0f;
+    private float halfSize;
+    public float maxLifeTime = 30.0f;
     private Rigidbody2D _myRigidbody2D;
 
     private void Awake()
@@ -17,24 +18,25 @@ public class Astroid : MonoBehaviour
         transform.eulerAngles = new Vector3(0.0f, 0.0f, Random.value * 360.0f);
         transform.localScale = Vector3.one * size;
         _myRigidbody2D.mass = size;
+        halfSize = size / 2;
     }
 
     public void SetTrajectory(Vector2 direction)
     {
         _myRigidbody2D.AddForce(direction * speed);
-        Destroy(gameObject, maxLifetime);
+        Destroy(gameObject, maxLifeTime);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (!collision.gameObject.CompareTag("Bullet")) return;
-        if (size * 0.5f >= minSize)
+        if (halfSize >= minSize)
         {
             CreateSplit();
             CreateSplit();
         }
         // Play explosion on death.
-        GameManager.instance.AstroidDestroyed(this);
+        GameManager.instance.AsteroidDestroyed(this);
         Destroy(gameObject);
         
     }
@@ -42,11 +44,10 @@ public class Astroid : MonoBehaviour
     private void CreateSplit()
     {
         Vector2 position = this.transform.position;
-        position += Random.insideUnitCircle * 0.5f;
+        position += Random.insideUnitCircle / 2;
 
         Astroid half = Instantiate(this, position, this.transform.rotation);
-        half.size = this.size * 0.5f;
-        half.SetTrajectory(Random.insideUnitCircle.normalized * this.speed * 0.8f);
+        half.size = halfSize;
+        half.SetTrajectory(Random.insideUnitCircle.normalized * speed * 0.8f);
     }
-
 }

@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     public float respawnTime = 3.0f;
     public int lives = 3;
     public float respawnInvulnerabilityTime = 3;
-    public int score = 0;
+    public int score;
     public AsteroidSpawner asteroidSpawner;
 
     public TMP_Text Score;
@@ -37,18 +37,18 @@ public class GameManager : MonoBehaviour
         }
     }
     
-    // Called whenever an Astroid is destroyed
-    public void AstroidDestroyed(Astroid astroid)
+    // Called whenever an Asteroid is destroyed
+    public void AsteroidDestroyed(Astroid asteroid)
     {
-        explosion.transform.position = astroid.transform.position;
+        explosion.transform.position = asteroid.transform.position;
         explosion.Play();
 
         // Increase score based on size, smaller = more points.
-        if (astroid.size < 0.75)
+        if (asteroid.size < 0.75)
         {
             score += 100;
         }
-        else if (astroid.size < 1.15f)
+        else if (asteroid.size < 1.15f)
         {
             score += 50;
         }
